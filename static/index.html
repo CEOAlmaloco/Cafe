@@ -1,0 +1,960 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>NEXUS COFFEE - Premium Experience</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap');
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --primary-gradient: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            --secondary-gradient: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+            --dark-gradient: linear-gradient(135deg, #1a1a2e 0%, #16213e 50%, #0f3460 100%);
+            --glass-bg: rgba(255, 255, 255, 0.1);
+            --glass-border: rgba(255, 255, 255, 0.2);
+            --text-primary: #ffffff;
+            --text-secondary: rgba(255, 255, 255, 0.8);
+            --accent-gold: #ffd700;
+            --accent-pink: #ff6b6b;
+            --accent-cyan: #4ecdc4;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background: var(--dark-gradient);
+            color: var(--text-primary);
+            overflow-x: hidden;
+            position: relative;
+        }
+
+        /* Animated background particles */
+        .bg-animation {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -1;
+            overflow: hidden;
+        }
+
+        .particle {
+            position: absolute;
+            width: 4px;
+            height: 4px;
+            background: var(--accent-gold);
+            border-radius: 50%;
+            animation: float 6s ease-in-out infinite;
+            opacity: 0.6;
+        }
+
+        @keyframes float {
+            0%, 100% { transform: translateY(0px) rotate(0deg); }
+            50% { transform: translateY(-20px) rotate(180deg); }
+        }
+
+        /* Glassmorphism container */
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 2rem;
+            position: relative;
+        }
+
+        /* Header with 3D effect */
+        .header {
+            text-align: center;
+            margin-bottom: 4rem;
+            position: relative;
+        }
+
+        .header::before {
+            content: '';
+            position: absolute;
+            top: -50px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 200px;
+            height: 200px;
+            background: radial-gradient(circle, var(--accent-gold) 0%, transparent 70%);
+            border-radius: 50%;
+            opacity: 0.3;
+            animation: pulse 2s ease-in-out infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { transform: translateX(-50%) scale(1); opacity: 0.3; }
+            50% { transform: translateX(-50%) scale(1.2); opacity: 0.1; }
+        }
+
+        .logo {
+            font-size: clamp(2.5rem, 5vw, 4rem);
+            font-weight: 900;
+            background: linear-gradient(135deg, var(--accent-gold), var(--accent-pink), var(--accent-cyan));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            margin-bottom: 1rem;
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+            position: relative;
+            z-index: 1;
+        }
+
+        .subtitle {
+            font-size: 1.2rem;
+            color: var(--text-secondary);
+            font-weight: 300;
+            letter-spacing: 0.05em;
+        }
+
+        /* Main grid layout */
+        .main-grid {
+            display: grid;
+            grid-template-columns: 1fr 400px;
+            gap: 3rem;
+            align-items: start;
+        }
+
+        /* Menu section with advanced glassmorphism */
+        .menu-section {
+            background: var(--glass-bg);
+            backdrop-filter: blur(20px);
+            border: 1px solid var(--glass-border);
+            border-radius: 2rem;
+            padding: 2.5rem;
+            position: relative;
+            box-shadow: 0 25px 50px rgba(0, 0, 0, 0.3);
+        }
+
+        .menu-section::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 1px;
+            background: linear-gradient(90deg, transparent, var(--accent-gold), transparent);
+        }
+
+        .section-title {
+            font-size: 2rem;
+            font-weight: 700;
+            margin-bottom: 2rem;
+            text-align: center;
+            position: relative;
+        }
+
+        .section-title::after {
+            content: '';
+            position: absolute;
+            bottom: -0.5rem;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 60px;
+            height: 3px;
+            background: var(--primary-gradient);
+            border-radius: 2px;
+        }
+
+        /* Coffee cards with 3D hover effects */
+        .coffee-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+        }
+
+        .coffee-card {
+            background: rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 1.5rem;
+            padding: 2rem;
+            position: relative;
+            transform-style: preserve-3d;
+            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            cursor: pointer;
+            overflow: hidden;
+        }
+
+        .coffee-card::before {
+            content: '';
+            position: absolute;
+            top: -2px;
+            left: -2px;
+            right: -2px;
+            bottom: -2px;
+            background: var(--primary-gradient);
+            border-radius: 1.5rem;
+            z-index: -1;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+
+        .coffee-card:hover {
+            transform: translateY(-10px) rotateX(5deg);
+            box-shadow: 0 30px 60px rgba(0, 0, 0, 0.4);
+        }
+
+        .coffee-card:hover::before {
+            opacity: 1;
+        }
+
+        .coffee-icon {
+            width: 60px;
+            height: 60px;
+            background: var(--secondary-gradient);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.8rem;
+            margin-bottom: 1.5rem;
+            transition: transform 0.3s ease;
+        }
+
+        .coffee-card:hover .coffee-icon {
+            transform: scale(1.1) rotate(10deg);
+        }
+
+        .coffee-name {
+            font-size: 1.4rem;
+            font-weight: 600;
+            margin-bottom: 1.5rem;
+            color: var(--text-primary);
+        }
+
+        .sizes-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 0.8rem;
+        }
+
+        .size-btn {
+            background: rgba(255, 255, 255, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            color: var(--text-primary);
+            padding: 1rem 0.5rem;
+            border-radius: 1rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-weight: 500;
+            font-size: 0.9rem;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .size-btn::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: var(--primary-gradient);
+            transition: left 0.3s ease;
+            z-index: -1;
+        }
+
+        .size-btn:hover::before {
+            left: 0;
+        }
+
+        .size-btn:hover {
+            transform: translateY(-2px);
+            border-color: var(--accent-gold);
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
+        }
+
+        /* Order section with premium styling */
+        .order-section {
+            background: var(--glass-bg);
+            backdrop-filter: blur(20px);
+            border: 1px solid var(--glass-border);
+            border-radius: 2rem;
+            padding: 2.5rem;
+            position: sticky;
+            top: 2rem;
+            box-shadow: 0 25px 50px rgba(0, 0, 0, 0.3);
+            min-height: 600px;
+        }
+
+        .order-header {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 2rem;
+            position: relative;
+        }
+
+        .cart-icon {
+            width: 40px;
+            height: 40px;
+            background: var(--secondary-gradient);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-right: 1rem;
+            animation: bounce 2s infinite;
+        }
+
+        @keyframes bounce {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-5px); }
+        }
+
+        .order-items {
+            max-height: 300px;
+            overflow-y: auto;
+            margin-bottom: 2rem;
+            padding-right: 0.5rem;
+        }
+
+        .order-items::-webkit-scrollbar {
+            width: 6px;
+        }
+
+        .order-items::-webkit-scrollbar-track {
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 3px;
+        }
+
+        .order-items::-webkit-scrollbar-thumb {
+            background: var(--primary-gradient);
+            border-radius: 3px;
+        }
+
+        .order-item {
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 1rem;
+            padding: 1.5rem;
+            margin-bottom: 1rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            transition: all 0.3s ease;
+        }
+
+        .order-item:hover {
+            background: rgba(255, 255, 255, 0.1);
+            transform: translateX(5px);
+        }
+
+        .item-details {
+            flex: 1;
+        }
+
+        .item-name {
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+        }
+
+        .item-info {
+            font-size: 0.9rem;
+            color: var(--text-secondary);
+        }
+
+        .item-price {
+            font-weight: 700;
+            color: var(--accent-gold);
+            font-size: 1.1rem;
+        }
+
+        .remove-btn {
+            background: var(--accent-pink);
+            color: white;
+            border: none;
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-left: 1rem;
+        }
+
+        .remove-btn:hover {
+            background: #ff5252;
+            transform: scale(1.1);
+        }
+
+        .discount-section {
+            margin: 2rem 0;
+        }
+
+        .discount-input {
+            width: 100%;
+            background: rgba(255, 255, 255, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            color: var(--text-primary);
+            padding: 1rem;
+            border-radius: 1rem;
+            font-size: 1rem;
+            margin-bottom: 1rem;
+            transition: all 0.3s ease;
+        }
+
+        .discount-input:focus {
+            outline: none;
+            border-color: var(--accent-gold);
+            background: rgba(255, 255, 255, 0.15);
+        }
+
+        .discount-input::placeholder {
+            color: var(--text-secondary);
+        }
+
+        .total-section {
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 1.5rem;
+            padding: 2rem;
+            margin: 2rem 0;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .total-section::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: conic-gradient(from 0deg, var(--accent-gold), var(--accent-pink), var(--accent-cyan), var(--accent-gold));
+            animation: rotate 4s linear infinite;
+            z-index: -1;
+        }
+
+        .total-section::after {
+            content: '';
+            position: absolute;
+            inset: 2px;
+            background: var(--dark-gradient);
+            border-radius: 1.3rem;
+            z-index: -1;
+        }
+
+        @keyframes rotate {
+            100% { transform: rotate(360deg); }
+        }
+
+        .total-label {
+            font-size: 1.2rem;
+            color: var(--text-secondary);
+            margin-bottom: 0.5rem;
+        }
+
+        .total-amount {
+            font-size: 2.5rem;
+            font-weight: 900;
+            background: var(--primary-gradient);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        /* Premium buttons */
+        .premium-btn {
+            width: 100%;
+            padding: 1.2rem;
+            border: none;
+            border-radius: 1rem;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+            margin-bottom: 1rem;
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+        }
+
+        .btn-primary {
+            background: var(--primary-gradient);
+            color: white;
+        }
+
+        .btn-secondary {
+            background: rgba(255, 255, 255, 0.1);
+            color: var(--text-primary);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+
+        .premium-btn::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.3), transparent);
+            transition: left 0.5s;
+        }
+
+        .premium-btn:hover::before {
+            left: 100%;
+        }
+
+        .premium-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 15px 30px rgba(0, 0, 0, 0.3);
+        }
+
+        /* Notification system */
+        .notification {
+            position: fixed;
+            top: 2rem;
+            right: 2rem;
+            background: var(--glass-bg);
+            backdrop-filter: blur(20px);
+            border: 1px solid var(--glass-border);
+            border-radius: 1rem;
+            padding: 1.5rem 2rem;
+            color: var(--text-primary);
+            transform: translateX(400px);
+            transition: transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            z-index: 1000;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
+        }
+
+        .notification.show {
+            transform: translateX(0);
+        }
+
+        .notification.success {
+            border-left: 4px solid var(--accent-gold);
+        }
+
+        .notification.error {
+            border-left: 4px solid var(--accent-pink);
+        }
+
+        .empty-state {
+            text-align: center;
+            padding: 3rem 2rem;
+            color: var(--text-secondary);
+        }
+
+        .empty-icon {
+            font-size: 3rem;
+            margin-bottom: 1rem;
+            opacity: 0.5;
+        }
+
+        /* Responsive design */
+        @media (max-width: 1024px) {
+            .main-grid {
+                grid-template-columns: 1fr;
+                gap: 2rem;
+            }
+            
+            .order-section {
+                position: relative;
+                top: 0;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                padding: 1rem;
+            }
+            
+            .coffee-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .menu-section,
+            .order-section {
+                padding: 1.5rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Animated background -->
+    <div class="bg-animation" id="bgAnimation"></div>
+
+    <div class="container">
+        <!-- Header -->
+        <header class="header">
+            <h1 class="logo">NEXUS COFFEE</h1>
+            <p class="subtitle">Premium Coffee Experience</p>
+        </header>
+
+        <!-- Main content -->
+        <div class="main-grid">
+            <!-- Menu section -->
+            <section class="menu-section">
+                <h2 class="section-title">Explore Our Menu</h2>
+                <div class="coffee-grid">
+                    <div class="coffee-card">
+                        <div class="coffee-icon">☕</div>
+                        <h3 class="coffee-name">Café Americano</h3>
+                        <div class="sizes-grid">
+                            <button class="size-btn" onclick="agregarCafe(1, 1)">
+                                <div>Pequeño</div>
+                                <div>$1200</div>
+                            </button>
+                            <button class="size-btn" onclick="agregarCafe(1, 2)">
+                                <div>Mediano</div>
+                                <div>$1500</div>
+                            </button>
+                            <button class="size-btn" onclick="agregarCafe(1, 3)">
+                                <div>Grande</div>
+                                <div>$1800</div>
+                            </button>
+                        </div>
+                    </div>
+
+                    <div class="coffee-card">
+                        <div class="coffee-icon">🥛</div>
+                        <h3 class="coffee-name">Café con Leche</h3>
+                        <div class="sizes-grid">
+                            <button class="size-btn" onclick="agregarCafe(2, 1)">
+                                <div>Pequeño</div>
+                                <div>$1300</div>
+                            </button>
+                            <button class="size-btn" onclick="agregarCafe(2, 2)">
+                                <div>Mediano</div>
+                                <div>$1600</div>
+                            </button>
+                            <button class="size-btn" onclick="agregarCafe(2, 3)">
+                                <div>Grande</div>
+                                <div>$1900</div>
+                            </button>
+                        </div>
+                    </div>
+
+                    <div class="coffee-card">
+                        <div class="coffee-icon">🍵</div>
+                        <h3 class="coffee-name">Té Negro</h3>
+                        <div class="sizes-grid">
+                            <button class="size-btn" onclick="agregarCafe(3, 1)">
+                                <div>Pequeño</div>
+                                <div>$1000</div>
+                            </button>
+                            <button class="size-btn" onclick="agregarCafe(3, 2)">
+                                <div>Mediano</div>
+                                <div>$1300</div>
+                            </button>
+                            <button class="size-btn" onclick="agregarCafe(3, 3)">
+                                <div>Grande</div>
+                                <div>$1600</div>
+                            </button>
+                        </div>
+                    </div>
+
+                    <div class="coffee-card">
+                        <div class="coffee-icon">🍫</div>
+                        <h3 class="coffee-name">Chocolate Caliente</h3>
+                        <div class="sizes-grid">
+                            <button class="size-btn" onclick="agregarCafe(4, 1)">
+                                <div>Pequeño</div>
+                                <div>$1400</div>
+                            </button>
+                            <button class="size-btn" onclick="agregarCafe(4, 2)">
+                                <div>Mediano</div>
+                                <div>$1700</div>
+                            </button>
+                            <button class="size-btn" onclick="agregarCafe(4, 3)">
+                                <div>Grande</div>
+                                <div>$2000</div>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Order section -->
+            <section class="order-section">
+                <div class="order-header">
+                    <div class="cart-icon">🛒</div>
+                    <h2 class="section-title">Tu Pedido</h2>
+                </div>
+
+                <div class="order-items" id="orderItems">
+                    <div class="empty-state">
+                        <div class="empty-icon">🛍️</div>
+                        <p>Tu carrito está vacío</p>
+                        <p>Agrega algunos cafés para comenzar</p>
+                    </div>
+                </div>
+
+                <div class="discount-section">
+                    <input type="text" id="discountCode" class="discount-input" placeholder="Código de descuento">
+                    <button class="premium-btn btn-secondary" onclick="aplicarDescuento()">Aplicar Descuento</button>
+                </div>
+
+                <div class="total-section">
+                    <div class="total-label">Total a Pagar</div>
+                    <div class="total-amount">$<span id="totalAmount">0</span></div>
+                </div>
+
+                <button class="premium-btn btn-primary" onclick="finalizarPedido()">Finalizar Pedido</button>
+                <button class="premium-btn btn-secondary" onclick="reiniciarPedido()">Limpiar Carrito</button>
+            </section>
+        </div>
+    </div>
+
+    <!-- Notification -->
+    <div id="notification" class="notification"></div>
+
+    <script>
+        // Crear partículas animadas de fondo
+        function createParticles() {
+            const bgAnimation = document.getElementById('bgAnimation');
+            const particleCount = 50;
+
+            for (let i = 0; i < particleCount; i++) {
+                const particle = document.createElement('div');
+                particle.classList.add('particle');
+                
+                // Posición aleatoria
+                particle.style.left = Math.random() * 100 + '%';
+                particle.style.top = Math.random() * 100 + '%';
+                
+                // Delay de animación aleatorio
+                particle.style.animationDelay = Math.random() * 6 + 's';
+                particle.style.animationDuration = (Math.random() * 3 + 3) + 's';
+                
+                bgAnimation.appendChild(particle);
+            }
+        }
+
+        // Datos del menú
+        const menu = {
+            tipos: [
+                { id: 1, nombre: "Café Americano", precios: { pequeño: 1200, mediano: 1500, grande: 1800 } },
+                { id: 2, nombre: "Café con Leche", precios: { pequeño: 1300, mediano: 1600, grande: 1900 } },
+                { id: 3, nombre: "Té Negro", precios: { pequeño: 1000, mediano: 1300, grande: 1600 } },
+                { id: 4, nombre: "Chocolate Caliente", precios: { pequeño: 1400, mediano: 1700, grande: 2000 } }
+            ],
+            tamanos: [
+                { id: 1, nombre: "pequeño" },
+                { id: 2, nombre: "mediano" },
+                { id: 3, nombre: "grande" }
+            ]
+        };
+
+        // Estado del pedido
+        let pedido = {
+            items: [],
+            total: 0,
+            codigoDescuento: null
+        };
+
+        // Cargar pedido desde localStorage
+        function cargarPedido() {
+            const pedidoGuardado = localStorage.getItem('nexus-pedido');
+            if (pedidoGuardado) {
+                pedido = JSON.parse(pedidoGuardado);
+                actualizarPedido();
+            }
+        }
+
+        // Guardar pedido en localStorage
+        function guardarPedido() {
+            localStorage.setItem('nexus-pedido', JSON.stringify(pedido));
+        }
+
+        // Agregar café al pedido
+        function agregarCafe(tipoId, tamanoId) {
+            const tipo = menu.tipos.find(t => t.id === tipoId);
+            const tamano = menu.tamanos.find(t => t.id === tamanoId);
+            
+            if (tipo && tamano) {
+                const precio = tipo.precios[tamano.nombre];
+                
+                // Buscar si ya existe el mismo producto
+                const itemExistente = pedido.items.find(item => 
+                    item.tipo === tipo.nombre && item.tamano === tamano.nombre
+                );
+
+                if (itemExistente) {
+                    itemExistente.cantidad++;
+                    itemExistente.precioTotal = itemExistente.precio * itemExistente.cantidad;
+                } else {
+                    pedido.items.push({
+                        tipo: tipo.nombre,
+                        tamano: tamano.nombre,
+                        precio: precio,
+                        cantidad: 1,
+                        precioTotal: precio
+                    });
+                }
+
+                // Recalcular el total
+                calcularTotal();
+                
+                guardarPedido();
+                actualizarPedido();
+                mostrarNotificacion(`${tipo.nombre} ${tamano.nombre} agregado al carrito`, 'success');
+            }
+        }
+
+        // Eliminar un ítem del pedido
+        function eliminarItem(index) {
+            const item = pedido.items[index];
+            if (item.cantidad > 1) {
+                item.cantidad--;
+                item.precioTotal = item.precio * item.cantidad;
+            } else {
+                pedido.items.splice(index, 1);
+            }
+            
+            calcularTotal();
+            guardarPedido();
+            actualizarPedido();
+            mostrarNotificacion('Producto eliminado del carrito', 'success');
+        }
+
+        // Calcular total del pedido
+        function calcularTotal() {
+            const subtotal = pedido.items.reduce((sum, item) => sum + item.precioTotal, 0);
+            pedido.total = pedido.codigoDescuento ? Math.round(subtotal * 0.9) : subtotal;
+        }
+
+        // Aplicar código de descuento
+        function aplicarDescuento() {
+            const codigo = document.getElementById('discountCode').value.trim().toUpperCase();
+            
+            if (!codigo) {
+                mostrarNotificacion('Por favor ingresa un código de descuento', 'error');
+                return;
+            }
+            
+            if (pedido.items.length === 0) {
+                mostrarNotificacion('Agrega productos al carrito primero', 'error');
+                return;
+            }
+            
+            if (codigo === 'NEXUS10' || codigo === 'PREMIUM' || codigo === 'COFFEE2024') {
+                pedido.codigoDescuento = codigo;
+                calcularTotal();
+                guardarPedido();
+                actualizarPedido();
+                mostrarNotificacion('¡Descuento del 10% aplicado!', 'success');
+                document.getElementById('discountCode').value = '';
+            } else {
+                mostrarNotificacion('Código de descuento inválido', 'error');
+            }
+        }
+
+        // Finalizar pedido
+        async function finalizarPedido() {
+            if (pedido.items.length === 0) {
+                mostrarNotificacion('Agrega al menos un producto a tu carrito', 'error');
+                return;
+            }
+
+            // Simular proceso de pago y reiniciar carrito después de un breve retraso
+            mostrarNotificacion('Procesando pago...', 'success');
+
+            try {
+                const response = await fetch('/create-checkout-session/', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify(pedido),
+                });
+
+                const session = await response.json();
+
+                if (response.ok) {
+                    // Redirigir al usuario a la página de pago de Stripe
+                    window.location.href = session.url;
+                     // Guardar el pedido en localStorage para que la página de boleta lo lea
+                     localStorage.setItem('nexus-last-order', JSON.stringify(pedido));
+                     // Abrir la página de la boleta en una nueva pestaña
+                     window.open('/static/boleta.html', '_blank');
+
+                } else {
+                    mostrarNotificacion(`Error al crear la sesión de pago: ${session.detail}`, 'error');
+                }
+            } catch (error) {
+                mostrarNotificacion(`Error en la comunicación con el servidor: ${error}`, 'error');
+            }
+        }
+
+        // Reiniciar pedido
+        function reiniciarPedido() {
+            pedido = {
+                items: [],
+                total: 0,
+                codigoDescuento: null
+            };
+            guardarPedido();
+            actualizarPedido();
+            document.getElementById('discountCode').value = '';
+            mostrarNotificacion('Carrito limpiado', 'success');
+        }
+
+        // Actualizar vista del pedido
+        function actualizarPedido() {
+            const orderItems = document.getElementById('orderItems');
+            const totalAmount = document.getElementById('totalAmount');
+            
+            if (pedido.items.length === 0) {
+                orderItems.innerHTML = `
+                    <div class="empty-state">
+                        <div class="empty-icon">🛍️</div>
+                        <p>Tu carrito está vacío</p>
+                        <p>Agrega algunos cafés para comenzar</p>
+                    </div>
+                `;
+            } else {
+                orderItems.innerHTML = pedido.items.map((item, index) => `
+                    <div class="order-item">
+                        <div class="item-details">
+                            <div class="item-name">${item.tipo} (${item.tamano})</div>
+                            <div class="item-info">Cantidad: ${item.cantidad}</div>
+                            <div class="item-price">$${item.precioTotal}</div>
+                        </div>
+                        <button class="remove-btn" onclick="eliminarItem(${index})">×</button>
+                    </div>
+                `).join('');
+            }
+            
+            totalAmount.textContent = pedido.total;
+        }
+
+        // Mostrar notificación
+        function mostrarNotificacion(mensaje, tipo) {
+            const notification = document.getElementById('notification');
+            notification.className = 'notification';
+            notification.textContent = mensaje;
+            notification.classList.add(tipo);
+            notification.classList.add('show');
+            setTimeout(() => {
+                notification.className = 'notification';
+            }, 3000);
+        }
+
+        // Inicializar
+        createParticles();
+        cargarPedido();
+    </script>
+    <!-- Incluir Stripe.js y configurar con la clave publicable -->
+    <script src="https://js.stripe.com/v3/"></script>
+    <script>
+        // Esta es una clave de prueba pública genérica proporcionada por Stripe.
+        // NO uses esta clave en producción.
+        const stripe = Stripe('pk_test_510000000000000000');
+    </script>
+</body>
+</html>

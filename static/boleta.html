@@ -1,0 +1,232 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Boleta NEXUS COFFEE</title>
+    <style>
+        body {
+            font-family: 'Courier New', Courier, monospace;
+            font-size: 0.8em;
+            line-height: 1.4;
+            margin: 20px;
+            color: #333;
+            background-color: #f9f9f9;
+        }
+        .boleta-container {
+            max-width: 300px;
+            margin: 0 auto;
+            padding: 20px;
+            border: 1px dashed #999;
+            background-color: #fff;
+            box-shadow: 0 0 5px rgba(0,0,0,0.1);
+        }
+        .header,
+        .footer {
+            text-align: center;
+            margin-bottom: 15px;
+        }
+        .logo {
+            font-size: 1.2em;
+            font-weight: bold;
+            margin-bottom: 5px;
+        }
+        .info,
+        .items,
+        .totals {
+            margin-bottom: 15px;
+            padding-bottom: 15px;
+            border-bottom: 1px dashed #ccc;
+        }
+        .items div {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 5px;
+        }
+        .items div span:first-child {
+            flex-grow: 1;
+            margin-right: 10px;
+        }
+         .totals div {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 5px;
+            font-weight: bold;
+        }
+        .totals .total-amount {
+            font-size: 1.1em;
+        }
+        .barcode-placeholder {
+            text-align: center;
+            margin: 20px 0;
+            padding: 10px 0;
+            border-top: 1px dashed #ccc;
+            border-bottom: 1px dashed #ccc;
+        }
+         .timbre-sii {
+            text-align: center;
+            font-size: 0.7em;
+            margin-top: 10px;
+        }
+        .centered-text {
+            text-align: center;
+            margin-bottom: 5px;
+        }
+    </style>
+</head>
+<body>
+    <div class="boleta-container">
+        <div class="header">
+            <div class="logo">NEXUS COFFEE</div>
+            <div class="centered-text">SUC: AV. Ejemplo #123</div>
+            <div class="centered-text">CIUDAD - PAIS</div>
+            <div class="centered-text">RUT: XX.XXX.XXX-X</div>
+        </div>
+
+        <div class="info">
+            <div id="boleta-info">
+                <!-- Date, Time, Bol. Electronica, etc. will be inserted here by JS -->
+            </div>
+        </div>
+
+        <div class="items" id="boleta-items">
+            <!-- Order items will be inserted here by JS -->
+        </div>
+
+        <div class="totals" id="boleta-totals">
+             <!-- Totals (Subtotal, IVA, Total) will be inserted here by JS -->
+        </div>
+
+         <div class="centered-text">TOTAL NUMERO DE ARTIC VEND = <span id="total-items-count">0</span></div>
+
+         <div class="centered-text" style="margin-top: 20px;">====== MI CLUB ======</div>
+         <div class="centered-text">Cliente: [Nombre Cliente]</div>
+         <div class="centered-text">ACUMULACION: [Puntos/Beneficios]</div>
+         <div class="centered-text">TOTAL ACUMULADO: [Total Acumulado]</div>
+
+        <div class="barcode-placeholder">
+            <!-- El código QR se generará aquí por JavaScript -->
+            <div id="qrcode"></div>
+        </div>
+
+        <div class="timbre-sii">
+            Timbre Electronico SII Res. 85 de 2011
+            <div id="timbre-info"></div>
+        </div>
+
+        <div class="footer">
+            <div class="centered-text" style="margin-top: 15px;">¡Gracias por tu compra!</div>
+            <div class="centered-text">www.nexuscoffee.com</div>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const pedidoString = localStorage.getItem('nexus-last-order');
+            const boletaInfoDiv = document.getElementById('boleta-info');
+            const boletaItemsDiv = document.getElementById('boleta-items');
+            const boletaTotalsDiv = document.getElementById('boleta-totals');
+            const totalItemsCountSpan = document.getElementById('total-items-count');
+            const timbreInfoDiv = document.getElementById('timbre-info');
+
+            if (!pedidoString) {
+                boletaInfoDiv.innerHTML = '<p>No se encontró información del último pedido.</p>';
+                return;
+            }
+
+            const pedido = JSON.parse(pedidoString);
+
+            // Hardcoded Boleta Info (simulated)
+            const boletaNum = Math.floor(Math.random() * 1000000000000).toString().padStart(12, '0');
+            const cajaNum = '001';
+            const now = new Date();
+            const fecha = now.toLocaleDateString('es-CL', { day: '2-digit', month: '2-digit', year: 'numeric' });
+            const hora = now.toLocaleTimeString('es-CL', { hour: '2-digit', minute: '2-digit', second: '2-digit' });
+
+            boletaInfoDiv.innerHTML = `
+                <div>Bol. Electronica: ${boletaNum} Caja: ${cajaNum}</div>
+                <div>Fecha: ${fecha} Hora: ${hora}</div>
+            `;
+
+            // Items
+            boletaItemsDiv.innerHTML = pedido.items.map(item => `
+                <div>
+                    <span>${item.tipo} (${item.tamano}) x${item.cantidad}</span>
+                    <span>$${item.precioTotal}</span>
+                </div>
+            `).join('');
+
+            // Totals (Simulated VAT)
+            const subtotal = pedido.items.reduce((sum, item) => sum + item.precioTotal, 0);
+            // Assuming a 19% VAT for simulation, adjust if needed
+            const ivaRate = 0.19;
+            const subtotalSinIVA = Math.round(pedido.total / (1 + ivaRate));
+            const ivaCalculado = pedido.total - subtotalSinIVA;
+
+            boletaTotalsDiv.innerHTML = `
+                <div>
+                    <span>SUBTOTAL</span>
+                    <span>$${subtotal}</span>
+                </div>
+                <div>
+                    <span>DESCUENTO</span>
+                    <span>-${subtotal - pedido.total}</span>
+                </div>
+                 <div>
+                    <span>TOTAL AFECTO $${subtotal - (subtotal - pedido.total)}</span>
+                    <span></span>
+                </div>
+                <div>
+                    <span>TOTAL EXENTO $0</span>
+                    <span></span>
+                </div>
+                <div>
+                    <span>TOTAL IVA(19.0%)$</span>
+                    <span>${ivaCalculado}</span>
+                </div>
+                <div>
+                    <span>TOTAL $</span>
+                    <span class="total-amount">${pedido.total}</span>
+                </div>
+                <div>
+                     <span>TBK DEBITO</span>
+                     <span>${pedido.total}</span>
+                </div>
+                 <div>
+                     <span>VUELTO</span>
+                     <span>0</span>
+                 </div>
+            `;
+
+            // Total items count
+            const totalCantidad = pedido.items.reduce((sum, item) => sum + item.cantidad, 0);
+            totalItemsCountSpan.textContent = totalCantidad;
+
+             // Timbre Info (Simulated)
+            timbreInfoDiv.innerHTML = `
+                <div>XXX XXX/XXX/XXX ${fecha} ${hora} AC-00</div>
+                <div>ATENDIDO POR: User_Virtual SCOXX</div>
+            `;
+
+            // Generar código QR (simulado)
+            // Necesitamos una librería de QR code, por ejemplo: qrcode.js
+            // En un entorno real, la información codificada debe ser la del Timbre Electrónico del SII
+            const qrData = `RUT:XX.XXX.XXX-X|TD:33|F:${boletaNum}|FECHA:${fecha}|MONTO:${pedido.total}|TST:${hora}`; // Datos simulados
+            
+            const qrcode = new QRCode(document.getElementById("qrcode"), {
+                text: qrData,
+                width: 128,
+                height: 128,
+                colorDark : "#000000",
+                colorLight : "#ffffff",
+                correctLevel : QRCode.CorrectLevel.H
+            });
+
+            // Clean up localStorage after displaying (optional, depending on desired behavior)
+            // localStorage.removeItem('nexus-last-order');
+        });
+    </script>
+    <!-- Incluir la librería qrcode.js -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+</body>
+</html> 
